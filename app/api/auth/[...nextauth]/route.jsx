@@ -2,10 +2,15 @@ import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import {PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
+import EmailProvider from "next-auth/providers/email";
+import { PrismaAdapter } from "@auth/prisma-adapter"
+
+
+const prisma = new PrismaClient()
 
 
 const login = async (username, password) => {
-  const prisma = new PrismaClient();
+  //const prisma = new PrismaClient();
   const user = await prisma.TestUser.findFirst({
     where: {
       userName: username,
@@ -20,8 +25,8 @@ const login = async (username, password) => {
     throw new Error("User Not Found!");
   }
 }; 
-
 const handler = NextAuth({
+  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -45,21 +50,24 @@ const handler = NextAuth({
           return null;
         }
       },
+    }),
+    EmailProvider({
+
+      server: process.env.EMAIL_SERVER,
+      from: process.env.EMAIL_FROM,
+      sendVerificationRequest({
+        identifier: email,
+        url,
+        provider: { server, from },
+      }) {
+        /* your function */
+      },
     }), 
   ],
   pages: {
     signIn: "/signIn",
   },
-  callbacks: {
-    async jwt({ token, user }) {
-      return { ...token, ...user };
-    },
-
-    async session({ session, token }) {
-      session.user = token;
-      return session;
-    },
-  },
+  callbacks: {},
 });
 
 export { handler as GET, handler as POST };

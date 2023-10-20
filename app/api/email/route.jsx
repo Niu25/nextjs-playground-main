@@ -5,8 +5,8 @@ import { signJwtAccessToken } from "../../JWT/jwt";
 
 
 const transporter = nodemailer.createTransport({
-  host: 'localhost', // SMTP server host (MailDev)
-  port: 1025,        // SMTP server port (MailDev)
+  host: process.env.EMAIL_SERVER_HOST,   // SMTP server host (MailDev)
+  port: process.env.EMAIL_SERVER_PORT,        // SMTP server port (MailDev)
 });
 
 export async function POST(req, res) {
