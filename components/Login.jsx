@@ -8,17 +8,17 @@ import { useRouter } from "next/navigation";
 const Login = () => {
   const router = useRouter();
   const userName = useRef("");
-  const pass = useRef("");
+  const password = useRef("");
   const onSubmit = async (e) => {
     e.preventDefault();
     const res = await signIn("credentials", {
       username: userName.current,
-      password: pass.current,
+      password: password.current,
       redirect: false,
     });
 
     if (!res?.error) {
-      router.push("http://localhost:3001");
+      router.push("http://localhost:3000");
     }
   };
   return (
@@ -36,7 +36,7 @@ const Login = () => {
           name="password"
           type="password"
           labelText="Password"
-          onChange={(e) => (pass.current = e.target.value)}
+          onChange={(e) => (password.current = e.target.value)}
         />
         <div className="flex items-center justify-center mt-2 gap-2">
           <button type="submit" className="w-28">

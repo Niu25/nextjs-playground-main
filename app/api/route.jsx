@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+/* import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
-const DATA_SOURCE_URL = "https://jsonplaceholder.typicode.com/todos";
+
 
 
 export async function POST(req, res) {
@@ -35,4 +35,4 @@ export async function POST(req, res) {
   //     }),
   //   });
   //   return NextResponse.json(newUser);
-}
+} */

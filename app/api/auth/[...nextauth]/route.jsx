@@ -1,6 +1,8 @@
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { Prisma, PrismaClient } from "@prisma/client";
+import {PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
+
 
 const login = async (username, password) => {
   const prisma = new PrismaClient();
@@ -10,13 +12,14 @@ const login = async (username, password) => {
     },
   });
 
-  if (user && user.password === password) {
+  if (user && (await bcrypt.compare(password, user.password)))  {
     user.password = "";
     return user;
+
   } else {
     throw new Error("User Not Found!");
   }
-};
+}; 
 
 const handler = NextAuth({
   providers: [
@@ -42,10 +45,20 @@ const handler = NextAuth({
           return null;
         }
       },
-    }),
+    }), 
   ],
   pages: {
     signIn: "/signIn",
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      return { ...token, ...user };
+    },
+
+    async session({ session, token }) {
+      session.user = token;
+      return session;
+    },
   },
 });
 
