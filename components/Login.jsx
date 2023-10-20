@@ -7,20 +7,26 @@ import { useRouter } from "next/navigation";
 
 const Login = () => {
   const router = useRouter();
-  const userName = useRef("");
-  const password = useRef("");
+  const email = useRef("");
+  //const password = useRef("");
   const onSubmit = async (e) => {
-    e.preventDefault();
-    const res = await signIn("credentials", {
-      username: userName.current,
-      password: password.current,
+    try {
+      e.preventDefault();
+    const res = await signIn("email", {
+      email: email.current,
+      //password: password.current,
       redirect: false,
     });
-
-    if (!res?.error) {
-      router.push("http://localhost:3000");
+      window.alert("E-Mail wurde erfolgreich gesendet.");
+      if (!res?.error) {
+        router.push("http://localhost:3000");
+      } 
+    } catch (error) {
+      console.log(error);
     }
+   
   };
+  
   return (
     <div>
       <div className="bg-gradient-to-b  from-slate-50 to-slate-200 p-2 text-center text-slate-600">
@@ -30,14 +36,15 @@ const Login = () => {
         <InputBox
           name="username"
           labelText="User Name"
-          onChange={(e) => (userName.current = e.target.value)}
+          onChange={(e) => (email.current = e.target.value)}
+
         />
-        <InputBox
+        {/* <InputBox
           name="password"
           type="password"
           labelText="Password"
           onChange={(e) => (password.current = e.target.value)}
-        />
+        /> */}
         <div className="flex items-center justify-center mt-2 gap-2">
           <button type="submit" className="w-28">
             Sign In
