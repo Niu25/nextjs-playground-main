@@ -34,8 +34,8 @@ const Login = () => {
       </div>
       <form onSubmit={onSubmit} className="p-2 flex flex-col gap-3">
         <InputBox
-          name="username"
-          labelText="User Name"
+          name="email"
+          labelText="E-Mail"
           onChange={(e) => (email.current = e.target.value)}
 
         />
