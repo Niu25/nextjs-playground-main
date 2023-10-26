@@ -2,13 +2,10 @@
 import React from "react";
 import { useState } from "react";
 
-
 const page = () => {
-  
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-
-  
+  const [message, setMessage] = useState("");
 
   const handleChangeUser = (e) => {
     setUserName(e.target.value);
@@ -18,17 +15,22 @@ const page = () => {
     setPassword(e.target.value);
   };
 
-  const postData = async (userName, password) => {
+  const postData = async (email, password) => {
     try {
       const response = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userName, password }),
+        body: JSON.stringify({ email, password }),
       });
-      const data = await response.json();
-      console.log(data);
+      if (response.status === 200) {
+        const data = await response.json();
+        setMessage(data.message);
+      } else {
+        const errorData = await response.json();
+        setMessage(errorData.error); // Set the error message in the state
+      }
     } catch (error) {
       console.error("Error occurred:", error);
     }
@@ -61,7 +63,9 @@ const page = () => {
       >
         Save to Database
       </button>
-      
+      {message && 
+        <p>{message}</p>
+      }
     </div>
   );
 };

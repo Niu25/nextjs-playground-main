@@ -4,29 +4,36 @@ import InputBox from "./InputBox";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const Login = () => {
   const router = useRouter();
   const email = useRef("");
+  const { data: session } = useSession();
   //const password = useRef("");
   const onSubmit = async (e) => {
     try {
       e.preventDefault();
-    const res = await signIn("email", {
-      email: email.current,
-      //password: password.current,
-      redirect: false,
-    });
+      const res = await signIn("email", {
+        email: email.current,
+        //password: password.current,
+        redirect: false,
+      });
       window.alert("E-Mail wurde erfolgreich gesendet.");
       if (!res?.error) {
         router.push("http://localhost:3000");
-      } 
+      }
     } catch (error) {
       console.log(error);
     }
-   
   };
-  
+  if (session && session.user) {
+    return (
+      <div>
+        <h1>Welcome {session.user.email}</h1>
+      </div>
+    );
+  }
   return (
     <div>
       <div className="bg-gradient-to-b  from-slate-50 to-slate-200 p-2 text-center text-slate-600">
@@ -37,7 +44,6 @@ const Login = () => {
           name="email"
           labelText="E-Mail"
           onChange={(e) => (email.current = e.target.value)}
-
         />
         {/* <InputBox
           name="password"

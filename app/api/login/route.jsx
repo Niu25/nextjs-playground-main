@@ -7,20 +7,19 @@ export async function POST(request) {
   const body = await request.json();
 
   const prisma = new PrismaClient();
-  const user = await prisma.TestUser.findFirst({
+  const user = await prisma.User.findFirst({
     where: {
-      userName: body.username,
+      email: body.email,
     },
   });
-  if (user && (await bcrypt.compare(body.password, user.password)))  {
+  if (user && (await bcrypt.compare(body.password, user.password))) {
     const { password, ...userWithoutPass } = user;
     const accessToken = signJwtAccessToken(userWithoutPass);
     const result = {
       ...userWithoutPass,
       accessToken,
     };
-   
-   
+
     //console.log(user);
     return new NextResponse(JSON.stringify(result));
   } else return new NextResponse(JSON.stringify(null));
